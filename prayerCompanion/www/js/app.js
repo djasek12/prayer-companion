@@ -42,11 +42,11 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers'])
     }
   })
 
-  .state('app.browse', {
-      url: '/browse',
+  .state('app.reminders', {
+      url: '/reminders',
       views: {
         'menuContent': {
-          templateUrl: 'templates/browse.html'
+          templateUrl: 'templates/reminders.html'
         }
       }
     })
@@ -54,7 +54,7 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers'])
       url: '/playlists',
       views: {
         'menuContent': {
-          templateUrl: 'templates/playlists.html',
+          templateUrl: 'templates/welcome.html',
           controller: 'PlaylistsCtrl'
         }
       }
@@ -75,8 +75,46 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers'])
 
   .controller('SampleController', function($scope, $cordovaLocalNotification, $ionicPlatform) {
 
+    function setDailyAlert(hour)
+    {
+
+      var now = new Date();
+      var year = now.getFullYear();
+      var month = ("0" + (now.getMonth()+1)).slice(-2) -1;
+      var date = ("0" + now.getDate()).slice(-2);
+      var hours = ("0" + now.getHours()).slice(-2);
+      var minutes = ("0" + now.getMinutes()).slice(-2);
+      var seconds = ("0" + now.getSeconds()).slice(-2);
+
+      //var intHour = parseInt(hour);
+      //var newHours = intHour.toString();
+
+      var newDate = new Date(year, month, date, hour, 0, 0)
+      return newDate
+    }
+
+    // add extra permissions needed for iOS
+
+    $scope.testFunc = function () {
+
+      console.log(setDailyAlert(23));
+    };
+
     document.addEventListener('deviceready', function () {
       // window.plugin.notification.local is now available
+
+      $scope.scheduleSpecificHourNotification = function () {
+
+        cordova.plugins.notification.local.schedule({
+          id         : 7,
+          title      : 'specific',
+          text       : 'message',
+          every      : 'hour',
+          autoClear  : false,
+          at         : setDailyAlert(23)
+        });
+
+      };
 
       $scope.scheduleEveryMinuteNotification = function () {
 
@@ -99,17 +137,7 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers'])
         at: new Date(new Date().getTime()),
         every: "minute"
       });
-      }
-
-      $scope.scheduleEveryHourNotification2 = function () {
-        $cordovaLocalNotification.add({
-          id: 4,
-          title: 'hour 2',
-          message: 'message',
-          at: new Date(new Date().getTime()),
-          every: "hour"
-        });
-      }
+      };
 
       $scope.scheduleEveryHourNotification = function () {
 
@@ -124,6 +152,16 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers'])
 
       };
 
+      $scope.scheduleEveryHourNotification2 = function () {
+        $cordovaLocalNotification.add({
+          id: 4,
+          title: 'hour 2',
+          message: 'message',
+          at: new Date(new Date().getTime()),
+          every: "hour"
+        });
+      };
+
       $scope.scheduleEveryWeekNotification = function () {
 
         cordova.plugins.notification.local.schedule({
@@ -135,6 +173,16 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers'])
           at         : new Date(new Date().getTime())
         });
 
+      };
+
+      $scope.scheduleEveryWeekNotification2 = function () {
+        $cordovaLocalNotification.add({
+          id: 6,
+          title: 'week 2',
+          message: 'message',
+          at: new Date(new Date().getTime()),
+          every: "week"
+        });
       };
 
       $scope.cancelAllNotifications = function () {
