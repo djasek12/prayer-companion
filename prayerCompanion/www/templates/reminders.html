@@ -1,93 +1,127 @@
-<ion-view view-title="Set Reminders">
+<ion-view view-title="New Reminder">
   <ion-content ng-controller="AlertCtrl">
+    <div class="container-fluid">
 
-    <label class="item item-input item-select">
-      <div class="input-label">
-        Select Frequency
+      <div class="row">
+        <div class="col-xs-12">
+          <label class="item item-input item-select">
+            <div class="input-label">
+              Reminder Type
+            </div>
+            <select id="reminderTypeSelect" , ng-model="reminderType">
+              <option value="prayer">Prayer</option>
+              <option value="intention">Intention</option>
+              <option value="meditation">Meditation</option>
+              <option value="quotes">Quotes</option>
+            </select>
+          </label>
+        </div>
       </div>
-      <select id="frequencySelect", ng-model="frequency">
-        <option>Hourly</option>
-        <option>Daily</option>
-        <option>Weekly</option>
-      </select>
-    </label>
 
-    <p>{{frequency}}</p>
+      <div class="row top-buffer" ng-show='reminderType == "prayer"'>
+        <div class="col-xs-12">
+          <label class="item item-input item-select">
+            <div class="input-label">
+              Prayer
+            </div>
+            <select id="prayerTypeSelect" , ng-model="prayerType">
+              <option value="ourFather">Our Father</option>
+              <option value="hailMary">Hail Mary</option>
+              <option value="gloryBe">Glory Be</option>
+            </select>
+          </label>
+        </div>
+      </div>
 
-    <div class="row" ng-show="testValue">
-      <button class="button" ng-click="selectTime()">
-      Select a time
-      </button>
-    </div>
+      <div class="row" ng-show="prayerType!=undefined">
+        <div class="col-xs-12">
+          <label class="item item-input item-select">
+            <div class="input-label">
+              Frequency
+            </div>
+            <select id="frequencySelect" , ng-model="frequency">
+              <option value="hour">Hourly</option>
+              <option value="day">Daily</option>
+              <option value="week">Weekly</option>
+            </select>
+          </label>
+        </div>
+      </div>
 
-    <!--<div class="container-fluid">-->
+
+      <div class="row" ng-show='frequency == "day"'>
+        <button class="button" ng-click="scheduleReminder()">
+          Select a time
+        </button>
+      </div>
+
+
+      <!--<div class="container-fluid">-->
       <!--<div class="row">-->
-          <!--<button class="button" ng-click="cancelAllNotifications()">-->
-            <!--Cancel All Notifications-->
-          <!--</button>-->
+      <!--<button class="button" ng-click="cancelAllNotifications()">-->
+      <!--Cancel All Notifications-->
+      <!--</button>-->
       <!--</div>-->
 
       <!--<div class="row">-->
-        <!--<button class="button" ng-click="displayNotifications()">-->
-          <!--See all notifications-->
-        <!--</button>-->
+      <!--<button class="button" ng-click="displayNotifications()">-->
+      <!--See all notifications-->
+      <!--</button>-->
       <!--</div>-->
 
       <!--<div class="row">-->
-        <!--<button class="button" ng-click="scheduleSpecificHourNotification()">-->
-          <!--specific hour-->
-        <!--</button>-->
+      <!--<button class="button" ng-click="scheduleSpecificHourNotification()">-->
+      <!--specific hour-->
+      <!--</button>-->
       <!--</div>-->
-
-        <!--<label class="item item-input item-select">-->
-          <!--<div class="input-label">-->
-            <!--Select Hour-->
-          <!--</div>-->
-          <!--<select>-->
-              <!--<option ng-repeat="h in hours">{{h}}</option>-->
-          <!--</select>-->
-        <!--</label>-->
 
       <!--<label class="item item-input item-select">-->
-        <!--<div class="input-label">-->
-          <!--AM/PM-->
-        <!--</div>-->
-        <!--<select>-->
-          <!--<option>AM</option>-->
-          <!--<option>PM</option>-->
-        <!--</select>-->
+      <!--<div class="input-label">-->
+      <!--Select Hour-->
+      <!--</div>-->
+      <!--<select>-->
+      <!--<option ng-repeat="h in hours">{{h}}</option>-->
+      <!--</select>-->
+      <!--</label>-->
+
+      <!--<label class="item item-input item-select">-->
+      <!--<div class="input-label">-->
+      <!--AM/PM-->
+      <!--</div>-->
+      <!--<select>-->
+      <!--<option>AM</option>-->
+      <!--<option>PM</option>-->
+      <!--</select>-->
       <!--</label>-->
 
 
-    </div>
-
-    <!--<button class="button" ng-click="scheduleEveryMinuteNotification()">-->
+      <!--<button class="button" ng-click="scheduleEveryMinuteNotification()">-->
       <!--Every Minute 1-->
-    <!--</button>-->
+      <!--</button>-->
 
-    <!--<button class="button" ng-click="scheduleEveryMinuteNotification2()">-->
+      <!--<button class="button" ng-click="scheduleEveryMinuteNotification2()">-->
       <!--Every Minute 2-->
-    <!--</button>-->
+      <!--</button>-->
 
-    <!--<button class="button" ng-click="scheduleEveryHourNotification()">-->
+      <!--<button class="button" ng-click="scheduleEveryHourNotification()">-->
       <!--Every Hour 1-->
-    <!--</button>-->
+      <!--</button>-->
 
-    <!--<button class="button" ng-click="scheduleEveryHourNotification2()">-->
+      <!--<button class="button" ng-click="scheduleEveryHourNotification2()">-->
       <!--Every Hour 2-->
-    <!--</button>-->
+      <!--</button>-->
 
-    <!--<button class="button" ng-click="scheduleEveryWeekNotification()">-->
+      <!--<button class="button" ng-click="scheduleEveryWeekNotification()">-->
       <!--Every Week 1-->
-    <!--</button>-->
+      <!--</button>-->
 
-    <!--<button class="button" ng-click="scheduleEveryWeekNotification2()">-->
+      <!--<button class="button" ng-click="scheduleEveryWeekNotification2()">-->
       <!--Every Week 2-->
-    <!--</button>-->
+      <!--</button>-->
 
-    <!--<button class="button" ng-click="testFunc()">-->
+      <!--<button class="button" ng-click="testFunc()">-->
       <!--Test Func-->
-    <!--</button>-->
+      <!--</button>-->
 
   </ion-content>
 </ion-view>

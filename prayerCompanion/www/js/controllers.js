@@ -1,195 +1,223 @@
 angular.module('starter.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout) {
+  .controller('AppCtrl', function($scope, $ionicModal, $timeout) {
 
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
-})
+    // With the new view caching in Ionic, Controllers are only called
+    // when they are recreated or on app start, instead of every page change.
+    // To listen for when this page is active (for example, to refresh data),
+    // listen for the $ionicView.enter event:
+    //$scope.$on('$ionicView.enter', function(e) {
+    //});
+  })
 
-.controller('WelcomeCtrl', function($scope) {
-})
+  .controller('WelcomeCtrl', function($scope) {
+  })
 
-.controller('AlertCtrl', function($scope, $cordovaLocalNotification, $ionicPlatform, ionicTimePicker) {
+  .controller('AlertCtrl', function($scope, $cordovaLocalNotification, $ionicPlatform, ionicTimePicker) {
 
-  $scope.testValue = true;
+    $scope.hours = [1, 2, 3];
 
-  var ipObj1 = {
-    callback: function (val) {      //Mandatory
-      if (typeof (val) === 'undefined') {
-        console.log('Time not selected');
-      } else {
+    var ipObj1 = {
+      callback: function (val) {      //Mandatory
+        if (typeof (val) === 'undefined') {
+          console.log('Time not selected');
+        } else {
 
-        var selectedTime = new Date(val * 1000);
+          var reminderText;
 
-        var now = new Date();
-        var year = now.getFullYear();
-        var month = ("0" + (now.getMonth()+1)).slice(-2) -1;
-        var date = ("0" + now.getDate()).slice(-2);
-        var hours = selectedTime.getUTCHours();
-        var minutes = selectedTime.getUTCMinutes();
-        var seconds = 0;
+          switch($scope.reminderType)
+          {
+            case "prayer":
+              reminderText = "Remember to pray ";
+              switch($scope.prayerType)
+              {
+                case "ourFather":
+                  reminderText += "an Our Father";
+                  break;
+                case "hailMary":
+                  reminderText += "a Hail Mary";
+                  break;
+                case "gloryBe":
+                  reminderText += "a Glory Be";
+                  break;
+              }
+          }
 
-        var newDate = new Date(year, month, date, hours, minutes, seconds);
-        console.log("new date: " + newDate);
+          console.log("reminderText: " + reminderText);
+
+          var selectedTime = new Date(val * 1000);
+
+          var now = new Date();
+          var year = now.getFullYear();
+          var month = ("0" + (now.getMonth()+1)).slice(-2) -1;
+          var date = ("0" + now.getDate()).slice(-2);
+          var hours = selectedTime.getUTCHours();
+          var minutes = selectedTime.getUTCMinutes();
+          var seconds = 0;
+
+          var newDate = new Date(year, month, date, hours, minutes, seconds);
+
+          console.log("reminderType: " + $scope.reminderType);
+          console.log("reminderText: " + reminderText);
+          console.log("frequency: " + $scope.frequency);
+          console.log("new date: " + newDate);
+
+          document.addEventListener('deviceready', function () {
+            cordova.plugins.notification.local.schedule({
+              id: 10,
+              title: $scope.reminderType,
+              text: 'this is your message',
+              every: $scope.frequency,
+              autoClear: false,
+              at: newDate
+            });
+          });
+
+        }
+      },
+      inputTime: 25200,   //Optional
+      format: 12,         //Optional
+      step: 5,           //Optional
+      setLabel: 'Set'    //Optional
+    };
+
+    $scope.scheduleReminder = function () {
+      ionicTimePicker.openTimePicker(ipObj1);
+    };
+
+    $scope.hours = [];
+    for(var i=1; i<13; i++)
+      $scope.hours.push(i);
+
+    function setDailyAlert(hour)
+    {
+
+      var now = new Date();
+      var year = now.getFullYear();
+      var month = ("0" + (now.getMonth()+1)).slice(-2) -1;
+      var date = ("0" + now.getDate()).slice(-2);
+      var hours = ("0" + now.getHours()).slice(-2);
+      var minutes = ("0" + now.getMinutes()).slice(-2);
+      var seconds = ("0" + now.getSeconds()).slice(-2);
+
+      //var intHour = parseInt(hour);
+      //var newHours = intHour.toString();
+
+      var newDate = new Date(year, month, date, hour, 0, 0)
+      return newDate
+    }
+
+    // add extra permissions needed for iOS
+
+    $scope.testFunc = function () {
+
+      console.log(setDailyAlert(23));
+    };
+
+    document.addEventListener('deviceready', function () {
+      // window.plugin.notification.local is now available
+
+      $scope.scheduleSpecificHourNotification = function () {
 
         cordova.plugins.notification.local.schedule({
-          id         : 10,
-          title      : 'reminder',
-          text       : 'this is your message',
-          every      : 'day',
+          id         : 7,
+          title      : 'specific',
+          text       : 'message',
+          every      : 'hour',
           autoClear  : false,
-          at         : newDate
+          at         : setDailyAlert(23)
         });
 
-      }
-    },
-    inputTime: 25200,   //Optional
-    format: 12,         //Optional
-    step: 5,           //Optional
-    setLabel: 'Set'    //Optional
-  };
+      };
 
-  $scope.selectTime = function () {
-    ionicTimePicker.openTimePicker(ipObj1);
-  };
+      $scope.scheduleEveryMinuteNotification = function () {
 
-  $scope.hours = [];
-  for(var i=1; i<13; i++)
-    $scope.hours.push(i);
+        cordova.plugins.notification.local.schedule({
+          id         : 1,
+          title      : 'minute 1',
+          text       : 'message',
+          every      : 'minute',
+          autoClear  : false,
+          at         : new Date(new Date().getTime())
+        });
 
-  function setDailyAlert(hour)
-  {
+      };
 
-    var now = new Date();
-    var year = now.getFullYear();
-    var month = ("0" + (now.getMonth()+1)).slice(-2) -1;
-    var date = ("0" + now.getDate()).slice(-2);
-    var hours = ("0" + now.getHours()).slice(-2);
-    var minutes = ("0" + now.getMinutes()).slice(-2);
-    var seconds = ("0" + now.getSeconds()).slice(-2);
+      $scope.scheduleEveryMinuteNotification2 = function () {
+        $cordovaLocalNotification.add({
+          id: 3,
+          title: 'minute 2',
+          message: 'message',
+          at: new Date(new Date().getTime()),
+          every: "minute"
+        });
+      };
 
-    //var intHour = parseInt(hour);
-    //var newHours = intHour.toString();
+      $scope.scheduleEveryHourNotification = function () {
 
-    var newDate = new Date(year, month, date, hour, 0, 0)
-    return newDate
-  }
+        cordova.plugins.notification.local.schedule({
+          id         : 2,
+          title      : 'hour 1',
+          text       : 'message',
+          every      : 'hour',
+          autoClear  : false,
+          at         : new Date(new Date().getTime())
+        });
 
-  // add extra permissions needed for iOS
+      };
 
-  $scope.testFunc = function () {
+      $scope.scheduleEveryHourNotification2 = function () {
+        $cordovaLocalNotification.add({
+          id: 4,
+          title: 'hour 2',
+          message: 'message',
+          at: new Date(new Date().getTime()),
+          every: "hour"
+        });
+      };
 
-    console.log(setDailyAlert(23));
-  };
+      $scope.scheduleEveryWeekNotification = function () {
 
-  document.addEventListener('deviceready', function () {
-    // window.plugin.notification.local is now available
+        cordova.plugins.notification.local.schedule({
+          id         : 5,
+          title      : 'week 1',
+          text       : 'message',
+          every      : 'week',
+          autoClear  : false,
+          at         : new Date(new Date().getTime())
+        });
 
-    $scope.scheduleSpecificHourNotification = function () {
+      };
 
-      cordova.plugins.notification.local.schedule({
-        id         : 7,
-        title      : 'specific',
-        text       : 'message',
-        every      : 'hour',
-        autoClear  : false,
-        at         : setDailyAlert(23)
-      });
+      $scope.scheduleEveryWeekNotification2 = function () {
+        $cordovaLocalNotification.add({
+          id: 6,
+          title: 'week 2',
+          message: 'message',
+          at: new Date(new Date().getTime()),
+          every: "week"
+        });
+      };
 
-    };
+      $scope.cancelAllNotifications = function () {
+        // cancel all scheduled notifications
+        cordova.plugins.notification.local.cancelAll(
+          function () {
+            alert('ok, all canceled');
+          }
+        )
+      };
 
-    $scope.scheduleEveryMinuteNotification = function () {
+      $scope.displayNotifications = function () {
+        cordova.plugins.notification.local.getScheduledIds(
+          function (scheduledIds) {
+            alert(scheduledIds.join(', '));
+          }
+        )
+      };
 
-      cordova.plugins.notification.local.schedule({
-        id         : 1,
-        title      : 'minute 1',
-        text       : 'message',
-        every      : 'minute',
-        autoClear  : false,
-        at         : new Date(new Date().getTime())
-      });
-
-    };
-
-    $scope.scheduleEveryMinuteNotification2 = function () {
-      $cordovaLocalNotification.add({
-        id: 3,
-        title: 'minute 2',
-        message: 'message',
-        at: new Date(new Date().getTime()),
-        every: "minute"
-      });
-    };
-
-    $scope.scheduleEveryHourNotification = function () {
-
-      cordova.plugins.notification.local.schedule({
-        id         : 2,
-        title      : 'hour 1',
-        text       : 'message',
-        every      : 'hour',
-        autoClear  : false,
-        at         : new Date(new Date().getTime())
-      });
-
-    };
-
-    $scope.scheduleEveryHourNotification2 = function () {
-      $cordovaLocalNotification.add({
-        id: 4,
-        title: 'hour 2',
-        message: 'message',
-        at: new Date(new Date().getTime()),
-        every: "hour"
-      });
-    };
-
-    $scope.scheduleEveryWeekNotification = function () {
-
-      cordova.plugins.notification.local.schedule({
-        id         : 5,
-        title      : 'week 1',
-        text       : 'message',
-        every      : 'week',
-        autoClear  : false,
-        at         : new Date(new Date().getTime())
-      });
-
-    };
-
-    $scope.scheduleEveryWeekNotification2 = function () {
-      $cordovaLocalNotification.add({
-        id: 6,
-        title: 'week 2',
-        message: 'message',
-        at: new Date(new Date().getTime()),
-        every: "week"
-      });
-    };
-
-    $scope.cancelAllNotifications = function () {
-      // cancel all scheduled notifications
-      cordova.plugins.notification.local.cancelAll(
-        function () {
-          alert('ok, all canceled');
-        }
-      )
-    };
-
-    $scope.displayNotifications = function () {
-      cordova.plugins.notification.local.getScheduledIds(
-        function (scheduledIds) {
-          alert(scheduledIds.join(', '));
-        }
-      )
-    };
-
-  }, false);
-});
+    }, false);
+  });
 
 //.controller('PlaylistCtrl', function($scope, $stateParams) {
 //});
