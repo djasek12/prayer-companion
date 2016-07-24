@@ -52,13 +52,13 @@
 
       <div class="row">
         <div class="col">
-            <button class="button" ng-click="scheduleReminder()">
+            <button class="button" ng-click="openTimePicker()">
               Select a time
             </button>
         </div>
       </div>
 
-      <div class="row">
+      <div class="row" ng-controller="AlertCtrl">
         <div class="col">
             <button class="button" ng-click="openDatePicker()">
               Select a date {{$scope.date}}
