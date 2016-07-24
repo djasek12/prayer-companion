@@ -1,9 +1,8 @@
 <ion-view view-title="New Reminder">
   <ion-content ng-controller="AlertCtrl">
-    <div class="container-fluid">
 
       <div class="row">
-        <div class="col-xs-12">
+        <div class="col">
           <label class="item item-input item-select">
             <div class="input-label">
               Reminder Type
@@ -19,7 +18,7 @@
       </div>
 
       <div class="row top-buffer" ng-show='reminderType == "prayer"'>
-        <div class="col-xs-12">
+        <div class="col">
           <label class="item item-input item-select">
             <div class="input-label">
               Prayer
@@ -34,25 +33,37 @@
       </div>
 
       <div class="row" ng-show="prayerType!=undefined">
-        <div class="col-xs-12">
+        <div class="col">
           <label class="item item-input item-select">
             <div class="input-label">
               Frequency
             </div>
             <select id="frequencySelect" , ng-model="frequency">
+              <option value="once">One-time</option>
               <option value="hour">Hourly</option>
               <option value="day">Daily</option>
               <option value="week">Weekly</option>
+              <option value="month">Monthly</option>
             </select>
           </label>
         </div>
       </div>
 
 
-      <div class="row" ng-show='frequency == "day"'>
-        <button class="button" ng-click="scheduleReminder()">
-          Select a time
-        </button>
+      <div class="row">
+        <div class="col">
+            <button class="button" ng-click="scheduleReminder()">
+              Select a time
+            </button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+            <button class="button" ng-click="openDatePicker()">
+              Select a date {{$scope.date}}
+            </button>
+        </div>
       </div>
 
 
@@ -68,60 +79,6 @@
       <!--See all notifications-->
       <!--</button>-->
       <!--</div>-->
-
-      <!--<div class="row">-->
-      <!--<button class="button" ng-click="scheduleSpecificHourNotification()">-->
-      <!--specific hour-->
-      <!--</button>-->
-      <!--</div>-->
-
-      <!--<label class="item item-input item-select">-->
-      <!--<div class="input-label">-->
-      <!--Select Hour-->
-      <!--</div>-->
-      <!--<select>-->
-      <!--<option ng-repeat="h in hours">{{h}}</option>-->
-      <!--</select>-->
-      <!--</label>-->
-
-      <!--<label class="item item-input item-select">-->
-      <!--<div class="input-label">-->
-      <!--AM/PM-->
-      <!--</div>-->
-      <!--<select>-->
-      <!--<option>AM</option>-->
-      <!--<option>PM</option>-->
-      <!--</select>-->
-      <!--</label>-->
-
-
-      <!--<button class="button" ng-click="scheduleEveryMinuteNotification()">-->
-      <!--Every Minute 1-->
-      <!--</button>-->
-
-      <!--<button class="button" ng-click="scheduleEveryMinuteNotification2()">-->
-      <!--Every Minute 2-->
-      <!--</button>-->
-
-      <!--<button class="button" ng-click="scheduleEveryHourNotification()">-->
-      <!--Every Hour 1-->
-      <!--</button>-->
-
-      <!--<button class="button" ng-click="scheduleEveryHourNotification2()">-->
-      <!--Every Hour 2-->
-      <!--</button>-->
-
-      <!--<button class="button" ng-click="scheduleEveryWeekNotification()">-->
-      <!--Every Week 1-->
-      <!--</button>-->
-
-      <!--<button class="button" ng-click="scheduleEveryWeekNotification2()">-->
-      <!--Every Week 2-->
-      <!--</button>-->
-
-      <!--<button class="button" ng-click="testFunc()">-->
-      <!--Test Func-->
-      <!--</button>-->
 
   </ion-content>
 </ion-view>

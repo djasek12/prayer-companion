@@ -13,7 +13,9 @@ angular.module('starter.controllers', [])
   .controller('WelcomeCtrl', function($scope) {
   })
 
-  .controller('AlertCtrl', function($scope, $cordovaLocalNotification, $ionicPlatform, ionicTimePicker) {
+
+
+  .controller('AlertCtrl', function($scope, $cordovaLocalNotification, $ionicPlatform, ionicTimePicker, ionicDatePicker) {
 
     $scope.hours = [1, 2, 3];
 
@@ -66,7 +68,7 @@ angular.module('starter.controllers', [])
             cordova.plugins.notification.local.schedule({
               id: 10,
               title: $scope.reminderType,
-              text: 'this is your message',
+              text: reminderText,
               every: $scope.frequency,
               autoClear: false,
               at: newDate
@@ -79,6 +81,24 @@ angular.module('starter.controllers', [])
       format: 12,         //Optional
       step: 5,           //Optional
       setLabel: 'Set'    //Optional
+    };
+
+    var ipObj2 = {
+      callback: function (val) {  //Mandatory
+        $scope.date = val;
+        console.log('scope date: ' + $scope.date);
+        //console.log('Return value from the datepicker popup is : ' + val, new Date(val));
+      },
+      from: new Date(), //Optional
+      to: new Date(2016, 10, 30), //Optional
+      inputDate: new Date(),      //Optional
+      disableWeekdays: [0],       //Optional
+      closeOnSelect: false,       //Optional
+      templateType: 'popup'       //Optional
+    };
+
+    $scope.openDatePicker = function(){
+      ionicDatePicker.openDatePicker(ipObj1);
     };
 
     $scope.scheduleReminder = function () {
