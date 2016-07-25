@@ -13,12 +13,42 @@ angular.module('starter.controllers', [])
 .controller('WelcomeCtrl', function($scope) {
 })
 
-.controller('AlertCtrl', function($scope, $cordovaLocalNotification, $ionicPlatform, ionicTimePicker, ionicDatePicker) {
+.controller('AlertCtrl', function($scope, $cordovaLocalNotification, $ionicPlatform, ionicTimePicker, ionicDatePicker, $rootScope) {
+
+
+    $scope.$on('$stateChangeSuccess', function () {
+
+        $scope.readyToScheduleNotification = false;
+
+        var now = new Date();
+        $scope.year = now.getFullYear();
+        $scope.month = ("0" + (now.getMonth() + 1)).slice(-2);
+        $scope.day = ("0" + now.getDate()).slice(-2);
+        $scope.hours = now.getHours();
+        $scope.minutes = ("0" + now.getMinutes()).slice(-2);
+
+        // console.log($scope.year);
+        // console.log($scope.month);
+        // console.log($scope.day);
+        // console.log($scope.hours);
+        // console.log($scope.minutes);
+        // console.log(now);
+    });
 
     var dateObj = {
         callback: function (val) {
-            $scope.date = new Date(val);
-            console.log('date: ' + $scope.date);
+            var date = new Date(val);
+            $scope.date = date;
+
+            $scope.year = date.getFullYear();
+            $scope.month = ("0" + (date.getMonth()+1)).slice(-2);
+            $scope.day = ("0" + date.getDate()).slice(-2);
+
+            $scope.timePickerOpened = true;
+
+            // console.log("new year: " + $scope.year);
+            // console.log("new month: " + $scope.month);
+            // console.log("new day: " + $scope.day);
         },
         from: new Date(),
         inputDate: new Date(),
@@ -27,13 +57,20 @@ angular.module('starter.controllers', [])
         templateType: 'popup'
     };
 
-    var timeObj = {
+    $scope.timeObj = {
         callback: function (val) {      //Mandatory
             if (typeof (val) === 'undefined') {
                 console.log('Time not selected');
             } else {
-                $scope.time = new Date(val);;
-                console.log("time: " + $scope.time);
+                time = new Date(val*1000);
+
+                $scope.hours = time.getUTCHours();
+                $scope.minutes = time.getUTCMinutes();
+
+                // console.log("hours updated: " + $scope.hours);
+                // console.log("minutes: " + $scope.minutes);
+
+                $scope.readyToScheduleNotification = true;
             }
         },
         inputTime: 25200,   //Optional
@@ -47,11 +84,11 @@ angular.module('starter.controllers', [])
     };
 
     $scope.openTimePicker = function(){
-        ionicTimePicker.openTimePicker(timeObj);
+        ionicTimePicker.openTimePicker($scope.timeObj);
     };
 
     $scope.setReminderText = function() {
-        var reminderText;
+
         switch($scope.reminderType)
         {
             case "prayer":
@@ -69,28 +106,18 @@ angular.module('starter.controllers', [])
                 break;
             }
         }
-
-        console.log("reminderText: " + reminderText);
     }
 
     $scope.scheduleReminder = function() {
 
-        var selectedTime = new Date($scope.time * 1000);
+        $scope.setReminderText();
 
-        var now = new Date();
-        var year = now.getFullYear();
-        var month = ("0" + (now.getMonth()+1)).slice(-2) -1;
-        var date = ("0" + now.getDate()).slice(-2);
-        var hours = selectedTime.getUTCHours();
-        var minutes = selectedTime.getUTCMinutes();
-        var seconds = 0;
-
-        var newDate = new Date(year, month, date, hours, minutes, seconds);
+        $scope.date = new Date($scope.year, $scope.month, $scope.day, $scope.hours, $scope.minutes);
 
         console.log("reminderType: " + $scope.reminderType);
         console.log("reminderText: " + $scope.reminderText);
         console.log("frequency: " + $scope.frequency);
-        console.log("new date: " + newDate);
+        console.log("new date: " + $scope.date);
 
         document.addEventListener('deviceready', function () {
             cordova.plugins.notification.local.schedule({
@@ -99,10 +126,25 @@ angular.module('starter.controllers', [])
                 text: $scope.reminderText,
                 every: $scope.frequency,
                 autoClear: false,
-                at: newDate
+                at: $scope.date
             });
         });
     };
+
+    $scope.openPickers = function() {
+        if($scope.frequency == 'day' || $scope.frequency == 'hour')
+            $scope.openTimePicker()
+        else {
+            $scope.openTimePicker()
+            $scope.openDatePicker()
+        }
+    }
+
+    $scope.$watch('readyToScheduleNotification', function(newValue, oldValue) {
+        if (newValue !== oldValue) {
+            $scope.scheduleReminder();
+        }
+    });
 
     // add extra permissions needed for iOS
 

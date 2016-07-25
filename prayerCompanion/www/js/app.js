@@ -64,4 +64,15 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers', 'ionic-t
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/welcome');
-});
+})
+
+.config(function (ionicTimePickerProvider) {
+    var timePickerObj = {
+      inputTime: (((new Date()).getHours()*60*60) + ((new Date()).getMinutes()*60)),
+      format: 12,
+      step: 15,
+      setLabel: 'Set',
+      closeLabel: 'Close'
+    };
+    ionicTimePickerProvider.configTimePicker(timePickerObj);
+  });
