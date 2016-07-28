@@ -22,7 +22,7 @@ angular.module('starter.controllers', [])
 
         var now = new Date();
         $scope.year = now.getFullYear();
-        $scope.month = ("0" + (now.getMonth() + 1)).slice(-2);
+        $scope.month = ("0" + (now.getMonth())).slice(-2);
         $scope.day = ("0" + now.getDate()).slice(-2);
         $scope.hours = now.getHours();
         $scope.minutes = ("0" + now.getMinutes()).slice(-2);
@@ -41,8 +41,9 @@ angular.module('starter.controllers', [])
             $scope.date = date;
 
             $scope.year = date.getFullYear();
-            $scope.month = ("0" + (date.getMonth()+1)).slice(-2);
+            $scope.month = ("0" + (date.getMonth())).slice(-2);
             $scope.day = ("0" + date.getDate()).slice(-2);
+
 
             $scope.timePickerOpened = true;
 
@@ -112,6 +113,7 @@ angular.module('starter.controllers', [])
 
         $scope.setReminderText();
 
+        //console.log("about to set date: " + $scope.year+ $scope.month+ $scope.day+ $scope.hours+ $scope.minutes);
         $scope.date = new Date($scope.year, $scope.month, $scope.day, $scope.hours, $scope.minutes);
 
         console.log("reminderType: " + $scope.reminderType);
@@ -141,7 +143,8 @@ angular.module('starter.controllers', [])
     }
 
     $scope.$watch('readyToScheduleNotification', function(newValue, oldValue) {
-        if (newValue !== oldValue) {
+        if ($scope.readyToScheduleNotification == true) {
+            $scope.readyToScheduleNotification = false;
             $scope.scheduleReminder();
         }
     });
