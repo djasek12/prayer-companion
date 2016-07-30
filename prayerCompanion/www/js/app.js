@@ -51,15 +51,15 @@ angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers', 'ionic-t
       }
     })
 
-  //.state('app.single', {
-  //  url: '/playlists/:playlistId',
-  //  views: {
-  //    'menuContent': {
-  //      templateUrl: 'templates/playlist.html',
-  //      controller: 'PlaylistCtrl'
-  //    }
-  //  }
-  //})
+  .state('app.reminderSet', {
+   url: '/reminderSet',
+   views: {
+     'menuContent': {
+       templateUrl: 'templates/reminderSet.html',
+       controller: 'AlertCtrl'
+     }
+   }
+  })
   ;
 
   // if none of the above states are matched, use this as the fallback

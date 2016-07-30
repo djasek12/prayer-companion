@@ -13,10 +13,15 @@ angular.module('starter.controllers', [])
 .controller('WelcomeCtrl', function($scope) {
 })
 
-.controller('AlertCtrl', function($scope, $cordovaLocalNotification, $ionicPlatform, ionicTimePicker, ionicDatePicker, $rootScope) {
+.controller('AlertCtrl', function($scope, $cordovaLocalNotification, $ionicPlatform, ionicTimePicker, ionicDatePicker, $state) {
+
+    $scope.incrementCounter = function() {
+    }
 
 
     $scope.$on('$stateChangeSuccess', function () {
+
+        console.log("")
 
         $scope.readyToScheduleNotification = false;
 
@@ -85,6 +90,7 @@ angular.module('starter.controllers', [])
     };
 
     $scope.openTimePicker = function(){
+        console.log("timepicker opened");
         ionicTimePicker.openTimePicker($scope.timeObj);
     };
 
@@ -121,6 +127,10 @@ angular.module('starter.controllers', [])
         console.log("frequency: " + $scope.frequency);
         console.log("new date: " + $scope.date);
 
+        if(!ionic.Platform.isWebView()) {
+            $state.go('app.reminderSet');
+        }
+
         document.addEventListener('deviceready', function () {
             cordova.plugins.notification.local.schedule({
                 id: 10,
@@ -130,10 +140,15 @@ angular.module('starter.controllers', [])
                 autoClear: false,
                 at: $scope.date
             });
+
+            $state.go('app.reminderSet');
         });
+
+
     };
 
     $scope.openPickers = function() {
+        console.log("openPickers")
         if($scope.frequency == 'day' || $scope.frequency == 'hour')
             $scope.openTimePicker()
         else {
@@ -172,6 +187,7 @@ angular.module('starter.controllers', [])
         };
 
     }, false);
+
 });
 
 //.controller('PlaylistCtrl', function($scope, $stateParams) {

@@ -1,6 +1,10 @@
 <ion-view view-title="New Reminder">
   <ion-content ng-controller="AlertCtrl">
 
+      <button class="button" ng-click="incrementCounter()">
+        incrementCounter {{counter}}
+      </button>
+
       <div class="row">
         <div class="col">
           <label class="item item-input item-select">
@@ -50,7 +54,7 @@
       </div>
 
 <!-- ng-show='frequency == "once" || frequency == "week" || frequency == "month"' -->
-      <div class="row">
+      <div class="row" ng-show='frequency!=undefined'>
         <div class="col">
             <button class="button" ng-click="openPickers()">
               Select first occurence
