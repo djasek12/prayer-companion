@@ -15,13 +15,20 @@ angular.module('starter.controllers', [])
 
 .controller('AlertCtrl', function($scope, $cordovaLocalNotification, $ionicPlatform, ionicTimePicker, ionicDatePicker, $state) {
 
-    $scope.incrementCounter = function() {
-    }
+    $scope.$watch('counter', function(newValue, oldValue) {
+        if (newValue !== oldValue) {
+            console.log("updating value");
+            window.localStorage.setItem("counter", $scope.counter);
+        }
+    });
 
 
     $scope.$on('$stateChangeSuccess', function () {
 
-        console.log("")
+        var db = new PouchDB('birthdays');
+        console.log(db.adapter);  
+
+        $scope.counter = localStorage.getItem("counter");
 
         $scope.readyToScheduleNotification = false;
 
@@ -128,7 +135,7 @@ angular.module('starter.controllers', [])
         console.log("new date: " + $scope.date);
 
         if(!ionic.Platform.isWebView()) {
-            $state.go('app.reminderSet');
+            $state.go('app.newReminder');
         }
 
         document.addEventListener('deviceready', function () {
@@ -141,7 +148,7 @@ angular.module('starter.controllers', [])
                 at: $scope.date
             });
 
-            $state.go('app.reminderSet');
+            $state.go('app.newReminder');
         });
 
 

@@ -8,6 +8,7 @@
     "ngCordova": "^0.1.26-alpha",
     "ionic-timepicker": "^0.5.1",
     "ion-datetime-picker": "^0.3.1",
-    "ionic-datepicker": "^1.2.0"
+    "ionic-datepicker": "^1.2.0",
+    "lokijs": "^1.4.1"
   }
 }
