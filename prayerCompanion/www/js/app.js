@@ -98,12 +98,24 @@ function BirthdayService($q) {
 
     function initDB() {
         // Creates the database or opens if it already exists
-        var db = new PouchDB('test');
+        console.log("creating db")
+        _db = new PouchDB('test7');
     };
 
     function addBirthday(birthday) {
-        console.log("adding birthday" + birthday);
-        return $q.when(_db.post(birthday));
+        console.log("adding birthday: " + birthday);
+
+        var doc = {
+            "_id": "mittens2",
+            "name": "Mittens",
+            "occupation": "kitten",
+            "age": 3,
+            "hobbies": [
+                "playing with balls of yarn",
+                "chasing laser pointers",
+            ]
+        };
+
     };
 
     function updateBirthday(birthday) {
@@ -119,24 +131,16 @@ function BirthdayService($q) {
         if (!_birthdays) {
             return $q.when(_db.allDocs({ include_docs: true}))
             .then(function(docs) {
-
-
-
+                console.log("inside first one")
                 // Each row has a .doc object and we just want to send an
                 // array of birthday objects back to the calling controller,
                 // so let's map the array to contain just the .doc objects.
                 _birthdays = docs.rows.map(function(row) {
                     // Dates are not automatically converted from a string.
-                    row.doc.Date = new Date(row.doc.Date);
                     return row.doc;
                 });
 
-                // Listen for changes on the database.
-                _db.changes({ live: true, since: 'now', include_docs: true})
-                .on('change', onDatabaseChange);
-
-                console.log("about to return birthdays: " + _birthdays);
-                return _birthdays;
+                return JSON.stringify(_birthdays);
             });
         } else {
             // Return cached data as a promise

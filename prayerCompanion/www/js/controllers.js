@@ -13,7 +13,18 @@ angular.module('starter.controllers', [])
 .controller('WelcomeCtrl', function($scope) {
 })
 
-.controller('AlertCtrl', function($scope, $cordovaLocalNotification, $ionicPlatform, ionicTimePicker, ionicDatePicker, $state) {
+.controller('AlertCtrl', function($scope, $cordovaLocalNotification, $ionicPlatform, ionicTimePicker, ionicDatePicker, $state, BirthdayService) {
+
+    $ionicPlatform.ready(function() {
+        BirthdayService.initDB();
+        BirthdayService.addBirthday("test");
+
+        // // Get all birthday records from the database.
+        BirthdayService.getAllBirthdays().then(function(birthdays) {
+            $scope.birthdays = birthdays;
+            console.log("all birthdays: " + birthdays);
+        });
+    });
 
     $scope.$watch('counter', function(newValue, oldValue) {
         if (newValue !== oldValue) {
@@ -24,9 +35,6 @@ angular.module('starter.controllers', [])
 
 
     $scope.$on('$stateChangeSuccess', function () {
-
-        var db = new PouchDB('birthdays');
-        console.log(db.adapter);  
 
         $scope.counter = localStorage.getItem("counter");
 
@@ -133,6 +141,8 @@ angular.module('starter.controllers', [])
         console.log("reminderText: " + $scope.reminderText);
         console.log("frequency: " + $scope.frequency);
         console.log("new date: " + $scope.date);
+
+        //BirthdayService.addBirthday("test");
 
         if(!ionic.Platform.isWebView()) {
             $state.go('app.newReminder');
