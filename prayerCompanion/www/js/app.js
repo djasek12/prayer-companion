@@ -4,7 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-var mainApp = angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers', 'ionic-timepicker', 'ion-datetime-picker', 'ionic-datepicker'])
+var mainApp = angular.module('starter', ['ionic', 'ngCordova', 'starter.controllers', 'ionic-timepicker', 'ionic-datepicker'])
 
 .run(function($ionicPlatform) {
     $ionicPlatform.ready(function() {
@@ -140,7 +140,10 @@ function BirthdayService($q) {
                     return row.doc;
                 });
 
-                return JSON.stringify(_birthdays);
+                // Listen for changes on the database.
+                _db.changes({ live: true, since: 'now', include_docs: true})
+                .on('change', onDatabaseChange);
+                return _birthdays;
             });
         } else {
             // Return cached data as a promise
